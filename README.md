@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/media/hero.svg" alt="FRAGMENT — a GLSL shader playground with an AI co-pilot" width="100%">
+<img src="docs/media/hero.svg" alt="FRAGMENT — GLSL in the editor, a co-pilot diff reviewed and accepted, and the shader running on a sphere" width="100%">
 
 <p>
   <a href="https://fragment-ashy.vercel.app"><img alt="Live demo" src="https://img.shields.io/badge/live%20demo-open%20the%20editor-a78bfa?style=for-the-badge&labelColor=07050f"></a>
@@ -54,6 +54,42 @@ flowchart LR
 
 <img src="docs/media/divider.svg" width="100%" alt="">
 
+## Uniforms you get for free
+
+Every shader is compiled with a standard header, so these are always there:
+
+| Uniform | Value |
+|---|---|
+| `u_time` · `u_frame` | Seconds since start, frame count |
+| `u_resolution` · `u_dpr` | Canvas size in pixels, device pixel ratio |
+| `u_mouse` · `u_mouse_delta` | Pointer position and its movement since the last frame |
+| `u_audio_low` · `u_audio_mid` · `u_audio_high` | Three bands from the microphone or an MP3 |
+| `u_audio_tex` | The full spectrum as a texture |
+| `u_camera` | The live webcam feed as a `sampler2D` |
+
+Declare your own and annotate it, and a slider appears in the panel:
+
+```glsl
+uniform float u_warp;   // @min: 0.0 @max: 4.0 @step: 0.05
+```
+
+Compile errors are parsed out of the GLSL log and shown inline on the right line.
+
+<img src="docs/media/divider.svg" width="100%" alt="">
+
+## Layers, post-fx and the co-pilot
+
+| Piece | Detail |
+|---|---|
+| **Blend modes** | Normal, multiply, screen, overlay, darken, lighten, colour dodge, colour burn, hard light, soft light, difference, exclusion. |
+| **Post-fx** | Bloom (intensity, threshold), chromatic aberration, vignette, film grain, pixelation and scanlines, each off by default. |
+| **Co-pilot** | An edge route sends your code and request to Claude (Sonnet) when `ANTHROPIC_API_KEY` is set. The answer comes back as a diff you accept or reject; nothing replaces your code silently. |
+| **Sharing** | A share creates a short `/s/<id>` link stored in Vercel KV for a year. The shader is also encoded into the URL, so a link still works where KV is not configured. |
+| **Saving** | Projects live in IndexedDB through Dexie and autosave every 30 seconds. |
+| **Learn** | A `/learn` page with examples to start from. |
+
+<img src="docs/media/divider.svg" width="100%" alt="">
+
 ## Türkçe özet
 
 **FRAGMENT**, 2026 için yeniden düşünülmüş bir GLSL shader editörü. Shader'ı yalnızca düz bir ekranda değil küre, torus ya da küp üzerinde görebiliyor, katmanları 12 karışım moduyla üst üste koyabiliyorsun. Mikrofon ve kamera doğrudan uniform olarak shader'a geliyor. Yapay zekâ yardımcısı koduna istediğin değişikliği yapıyor ve onaylamadan önce farkı gösteriyor. Sonucu PNG, 4K ya da WebM döngü olarak indirebilirsin.
@@ -64,7 +100,7 @@ flowchart LR
 
 ```sh
 pnpm install
-cp .env.local.example .env.local   # AI key and optional KV for the gallery
+cp .env.local.example .env.local   # ANTHROPIC_API_KEY, optional Vercel KV for short links
 pnpm dev                           # http://localhost:3000
 pnpm build
 ```
@@ -75,11 +111,11 @@ components/preview/   canvas, 3D viewport, layer compositor
 components/panels/    uniforms, inputs, layers, export
 lib/shader/           compiler, uniforms, templates
 lib/storage/          Dexie projects and gallery client
-app/api/              AI co-pilot, gallery and OG image routes
+app/api/              AI co-pilot and share routes
 ```
 
 <div align="center">
 <br>
 <a href="https://github.com/kutluhangil"><img src="docs/media/signature.svg" width="100%" alt="Built by kutluhangil"></a>
-<sub>Write a fragment. Ship a world.</sub>
+<sub>MIT licensed · Write a fragment. Ship a world. · the code in the banner is illustrative.</sub>
 </div>
